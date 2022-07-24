@@ -1,5 +1,5 @@
 import css from './index.module.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery/index';
 import Button from './Button';
@@ -22,12 +22,14 @@ const App = () => {
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const [per_page, setPer_page] = useState(12);
   const [isVisible, setIsVisible] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showModalWindow, setShowModalWindow] = useState(false);
   const [largeImage, setLargeImage] = useState('');
+  const isFirstRender = useRef(true);
 
   // componentDidUpdate(prevProps, prevState) {
   //   const { query, page, per_page } = this.state;
@@ -36,14 +38,6 @@ const App = () => {
   //     this.getPhotos(query, page, per_page);
   //   }
   // }
-  useEffect(
-    (_, prevState) => {
-      if (prevState.query !== query || prevState.page !== page) {
-        getPhotos(query, page, per_page);
-      }
-    },
-    [page, per_page, query]
-  );
 
   // getPhotos = async (query, page, per_page) => {
   //   if (!query) return;
@@ -63,15 +57,15 @@ const App = () => {
   //     this.setState({ isLoading: false });
   //   }
   // };
-
   const getPhotos = async (query, page, per_page) => {
     if (!query) return;
+
     setIsLoading(true);
 
     try {
       const data = await API.getImages(query, page, per_page);
 
-      setImages(prevState => [...prevState.images, ...data.hits]);
+      setImages(() => [...images, ...data.hits]);
       setIsVisible(() => page < Math.ceil(data.totalHits / per_page));
     } catch (error) {
       setError(error.response.data);
@@ -80,6 +74,20 @@ const App = () => {
       setIsLoading(false);
     }
   };
+  useEffect(
+    prevState => {
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        return;
+      }
+      // else if (prevState.query !== query || prevState.page !== page) {
+      //   getPhotos(query, page, per_page);
+      // }
+      getPhotos(query, page, per_page);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [query, page, per_page]
+  );
 
   // handleSubmitForm = value => {
   //   this.setState({
@@ -100,7 +108,7 @@ const App = () => {
   //   this.setState(prevState => ({ page: prevState.page + 1 }));
   // };
   const handleLoadMore = () => {
-    setPage(prevState => prevState.page + 1);
+    setPage(page + 1);
   };
 
   // openModal = largeImageURL => {
@@ -114,22 +122,10 @@ const App = () => {
     setLargeImage(largeImageURL);
   };
 
-  // closeModal = () => {
-  //   this.setState({
-  //     showModalWindow: false,
-  //     largeImage: '',
-  //   });
-  // };
   const closeModal = () => {
     setShowModalWindow(false);
     setLargeImage('');
   };
-
-  // render() {
-  // const { handleSubmitForm, handleLoadMore } = this;
-
-  // const { isVisible, images, error, isLoading, showModalWindow, largeImage } =
-  //   this.state;
 
   return (
     <div className={css.app}>
