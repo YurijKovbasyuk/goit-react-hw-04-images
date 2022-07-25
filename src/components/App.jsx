@@ -31,32 +31,6 @@ const App = () => {
   const [largeImage, setLargeImage] = useState('');
   const isFirstRender = useRef(true);
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   const { query, page, per_page } = this.state;
-
-  //   if (prevState.query !== query || prevState.page !== page) {
-  //     this.getPhotos(query, page, per_page);
-  //   }
-  // }
-
-  // getPhotos = async (query, page, per_page) => {
-  //   if (!query) return;
-  //   this.setState({ isLoading: true });
-
-  //   try {
-  //     const data = await API.getImages(query, page, per_page);
-
-  //     this.setState(prevState => ({
-  //       images: [...prevState.images, ...data.hits],
-  //       isVisible: page < Math.ceil(data.totalHits / per_page),
-  //     }));
-  //   } catch (error) {
-  //     this.setState({ error: error.response.data });
-  //     console.log('error', error.response.data);
-  //   } finally {
-  //     this.setState({ isLoading: false });
-  //   }
-  // };
   const getPhotos = async (query, page, per_page) => {
     if (!query) return;
 
@@ -80,23 +54,12 @@ const App = () => {
         isFirstRender.current = false;
         return;
       }
-      // else if (prevState.query !== query || prevState.page !== page) {
-      //   getPhotos(query, page, per_page);
-      // }
       getPhotos(query, page, per_page);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [query, page, per_page]
   );
 
-  // handleSubmitForm = value => {
-  //   this.setState({
-  //     query: value.trim(),
-  //     page: 1,
-  //     isVisible: false,
-  //     images: [],
-  //   });
-  // };
   const handleSubmitForm = value => {
     setQuery(value.trim());
     setPage(1);
@@ -104,19 +67,10 @@ const App = () => {
     setImages([]);
   };
 
-  // handleLoadMore = () => {
-  //   this.setState(prevState => ({ page: prevState.page + 1 }));
-  // };
   const handleLoadMore = () => {
     setPage(page + 1);
   };
 
-  // openModal = largeImageURL => {
-  //   this.setState({
-  //     showModalWindow: true,
-  //     largeImage: largeImageURL,
-  //   });
-  // };
   const openModal = largeImageURL => {
     setShowModalWindow(true);
     setLargeImage(largeImageURL);
