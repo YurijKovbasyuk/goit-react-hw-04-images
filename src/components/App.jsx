@@ -6,18 +6,6 @@ import Button from './Button';
 import * as API from '../API/API';
 import Modal from './Modal';
 
-// class App extends Component {
-//   state = {
-//     images: [],
-//     query: '',
-//     page: 1,
-//     per_page: 12,
-//     isVisible: false,
-//     error: null,
-//     isLoading: false,
-//     showModalWindow: false,
-//     largeImage: '',
-//   };
 const App = () => {
   const [images, setImages] = useState([]);
   const [query, setQuery] = useState('');
